@@ -214,6 +214,11 @@ lookup_county_code_to_name = {
    'WAL':'Walton',
    'WAS':'Washington'
    }
+countyinfodf = pd.DataFrame({
+        "Abbrev" : ['ALA' ,'BAK' ,'BAY' ,'BRA' ,'BRE' ,'BRO' ,'CAL' ,'CHA' ,'CIT' ,'CLA' ,'CLL' ,'CLM' ,'DAD' ,'DES' ,'DIX' ,'DUV' ,'ESC' ,'FLA' ,'FRA' ,'GAD' ,'GIL' ,'GLA' ,'GUL' ,'HAM' ,'HAR' ,'HEN' ,'HER' ,'HIG' ,'HIL' ,'HOL' ,'IND' ,'JAC' ,'JEF' ,'LAF' ,'LAK' ,'LEE' ,'LEO' ,'LEV' ,'LIB' ,'MAD' ,'MAN' ,'MRN' ,'MRT' ,'MON' ,'NAS' ,'OKA' ,'OKE' ,'ORA' ,'OSC' ,'PAL' ,'PAS' ,'PIN' ,'POL' ,'PUT' ,'SAN' ,'SAR' ,'SEM' ,'STJ' ,'STL' ,'SUM' ,'SUW' ,'TAY' ,'UNI' ,'VOL' ,'WAK' ,'WAL' ,'WAS'],
+        "County" : ['Alachua' ,'Baker' ,'Bay' ,'Bradford' ,'Brevard' ,'Broward' ,'Calhoun' ,'Charlotte' ,'Citrus' ,'Clay' ,'Collier' ,'Columbia' ,'Miami-Dade' ,'Desoto' ,'Dixie' ,'Duval' ,'Escambia' ,'Flagler' ,'Franklin' ,'Gadsden' ,'Gilchrist' ,'Glades' ,'Gulf' ,'Hamilton' ,'Hardee' ,'Hendry' ,'Hernando' ,'Highlands' ,'Hillsborough' ,'Holmes' ,'Indian River' ,'Jackson' ,'Jefferson' ,'Lafayette' ,'Lake' ,'Lee' ,'Leon' ,'Levy' ,'Liberty' ,'Madison' ,'Manatee' ,'Marion' ,'Martin' ,'Monroe' ,'Nassau' ,'Okaloosa' ,'Okeechobee' ,'Orange' ,'Osceola' ,'Palm Beach' ,'Pasco' ,'Pinellas' ,'Polk' ,'Putnam' ,'Santarosa' ,'Sarasota' ,'Seminole' ,'St. Johns' ,'St Lucie' ,'Sumter' ,'Suwannee' ,'Taylor' ,'Union' ,'Volusia' ,'Wakulla' ,'Walton' ,'Washington'],
+        "Sachs Region" : ['North Central' ,'North East' ,'North West' ,'North East' ,'Central East' ,'South East' ,'North West' ,'South West' ,'North Central' ,'North East' ,'South West' ,'North Central' ,'South East' ,'Central West' ,'North Central' ,'North East' ,'North West' ,'North East' ,'North West' ,'North West' ,'North Central' ,'South West' ,'North West' ,'North Central' ,'Central West' ,'South West' ,'Central West' ,'Central West' ,'Central West' ,'North West' ,'Central East' ,'North West' ,'North West' ,'North Central' ,'Central East' ,'South West' ,'North West' ,'North Central' ,'North West' ,'North Central' ,'Central West' ,'North Central' ,'Central East' ,'South East' ,'North East' ,'North West' ,'Central East' ,'Central East' ,'Central East' ,'South East' ,'Central West' ,'Central West' ,'Central West' ,'North East' ,'North West' ,'Central West' ,'Central East' ,'North East' ,'Central East' ,'Central West' ,'North Central' ,'North Central' ,'North East' ,'Central East' ,'North West' ,'North West' ,'North West']})
+
 lookup_race = {
     '1':'Other',                # VF code for 'American Indian or Alaskan Native'. SMG chooses to code these respondents as 'Other'
     '2':'Other',                # VF code for 'Asian or Pacific Islander'. SMG chooses to code these respondents as 'Other'
@@ -283,6 +288,39 @@ def extract_single_county_emails():
     print('Done! ' + 'Time end: ' + str(datetime.datetime.now()))
     print('Time elapsed: ' + str(time_execute))
 
+
+def extract_emails():
+    time_start = datetime.datetime.now()
+    global allvoterfiles
+    global allvoterfiles_emails
+    allvoterfiles_emails = allvoterfiles[allvoterfiles['Email_Address'].str.len()>2] #EMAIL SENSOR
+    time_end = datetime.datetime.now()
+    time_execute = time_end - time_start
+    print('Done! ' + 'Time end: ' + str(datetime.datetime.now()))
+    print('Time elapsed: ' + str(time_execute))
+
+def random_sample_emails():
+    time_start = datetime.datetime.now()
+    global allvoterfiles_emails, sample_size, slice_size, sampledf
+    sampledf = allvoterfiles_emails.sample(n=sample_size)
+    time_end = datetime.datetime.now()
+    time_execute = time_end - time_start
+    print('Done! ' + 'Time end: ' + str(datetime.datetime.now()))
+    print('Time elapsed: ' + str(time_execute))
+
+
+
+
+
+
+def prune_columns(x):
+    '''Selects needed columns, drops the rest, and re-orders the remaining columns in an ideal fashion. '''
+    x = x[['a','d']] # Select the ones you want -- https://stackoverflow.com/questions/14940743/selecting-excluding-sets-of-columns-in-pandas
+    #build list of columns in the order you want
+
+
+    
+
 def import_all_voter_files():             #  https://stackoverflow.com/a/36416258
     """This will grab all voterfiles in the directory and hold them in RAM as a spreadsheet-like object called a DataFrame. WARNING: MEMORY-INTENSIVE!"""
     global allvoterfiles     ### DELETE THIS GLOBAL ONCE SAMPLE EXTRACTION / CSV EXPORT COMES ONLINE
@@ -311,7 +349,7 @@ def import_all_voter_files():             #  https://stackoverflow.com/a/3641625
 def readme():
     print('Function list:')   
     print('\n-  import_all_voter_files()' + '\n\t' + import_all_voter_files.__doc__)
-    print('\n-  main()' + '\n\t' + main.__doc__)
+#    print('\n-  menu()' + '\n\t' + menu.__doc__)
 
 time_01 = datetime.datetime.now()
 print('\nWelcome to the SMG Florida Voter-file handler!'
@@ -319,46 +357,46 @@ print('\nWelcome to the SMG Florida Voter-file handler!'
       + '\n' + 'For help, type: readme()')
 
 #%% MAIN
-def main():
-    """Meant to be the main algorithm to extract a sample for our (semi)monthly Omnibus survey."""
-    #check if variable: allvoterfiles contains enough for a sample. Rows > 1M?
-    #if check is False, then execute the function: read_allvoterfiles()
-    #Then extract from allvoterfiles variable a SAMPLE sliced into SLICESIZE chunks
-    #output each sample-slice into .csv files
-    global sample_size
-    global slice_size
-    if len(allvoterfiles) > sample_size:
-        print("\n"
-              +" Sample size = " + str(sample_size) + "\n"
-              +" Slice size  = " + str(slice_size) + "\n"
-              +" Date of VF  = " + str(date_voterfile) + "\n")
-        do_sample = input("   CONTINUE? Y/N : ")
-        if do_sample == 'y':
-            print("Extracting sample, please wait...")
-            time.sleep(1.5)
-            print("Working...")
-            time.sleep(1.5)
-            print("DONE!")
-            time.sleep(0.666)
-        #extract sample
-    else:
-        print("ERROR! Data is smaller than sample! \n\n"
-                      +"Sample = " + str(sample_size)
-                      +", Data size = " + str(len(allvoterfiles)) + "\n\n"
-                      +"Re-extract sample?           type: r \n"
-                      +"Re-size sample to fit data?  type: s \n"
-                      +"Quit sample-extraction loop? type: q")
-        error = input("   TYPE : ")
-        if error == 'r':
-            print("Re-extracting sample! (please wait approx 4min) please retry when finished.")
-        elif error == 's':
-            sample_size = len(allvoterfiles)
-            time.sleep(0.25)
-            print("Re-sizing sample! Sample is now " + str(sample_size) + " please retry.")
-        else:
-            time.sleep(0.25)
-            print("Quitting sample extraction loop.")
-            #exit sample extraction loop
+#def menu():
+#    """Meant to be the main algorithm to extract a sample for our (semi)monthly Omnibus survey."""
+#    #check if variable: allvoterfiles contains enough for a sample. Rows > 1M?
+#    #if check is False, then execute the function: read_allvoterfiles()
+#    #Then extract from allvoterfiles variable a SAMPLE sliced into SLICESIZE chunks
+#    #output each sample-slice into .csv files
+#    global sample_size
+#    global slice_size
+#    if len(allvoterfiles) > sample_size:
+#        print("\n"
+#              +" Sample size = " + str(sample_size) + "\n"
+#              +" Slice size  = " + str(slice_size) + "\n"
+#              +" Date of VF  = " + str(date_voterfile) + "\n")
+#        do_sample = input("   CONTINUE? Y/N : ")
+#        if do_sample == 'y':
+#            print("Extracting sample, please wait...")
+#            time.sleep(1.5)
+#            print("Working...")
+#            time.sleep(1.5)
+#            print("DONE!")
+#            time.sleep(0.666)
+#        #extract sample
+#    else:
+#        print("ERROR! Data is smaller than sample! \n\n"
+#                      +"Sample = " + str(sample_size)
+#                      +", Data size = " + str(len(allvoterfiles)) + "\n\n"
+#                      +"Re-extract sample?           type: r \n"
+#                      +"Re-size sample to fit data?  type: s \n"
+#                      +"Quit sample-extraction loop? type: q")
+#        error = input("   TYPE : ")
+#        if error == 'r':
+#            print("Re-extracting sample! (please wait approx 4min) please retry when finished.")
+#        elif error == 's':
+#            sample_size = len(allvoterfiles)
+#            time.sleep(0.25)
+#            print("Re-sizing sample! Sample is now " + str(sample_size) + " please retry.")
+#        else:
+#            time.sleep(0.25)
+#            print("Quitting sample extraction loop.")
+#            #exit sample extraction loop
 
 
 
