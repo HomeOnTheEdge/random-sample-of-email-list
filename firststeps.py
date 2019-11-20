@@ -23,7 +23,7 @@ from random import sample
 ## SEE ALSO: https://scipy-lectures.org/intro/language/reusing_code.html
 
 #%% Declaring variables and functions
-date_voterfile = str(20191008)
+date_voterfile = str(20191112)
 path_voterfile = str(
     '/Users/smginterns/Documents/Voter File/'
     + date_voterfile+'_VoterDetail/') 
@@ -36,9 +36,19 @@ county_path = str(
     "/Users/smginterns/Documents/Voter File/"
     + date_voterfile+"_VoterDetail/"
     + county_single+"_"+date_voterfile+".txt")
+columns_keep = [
+        'Email_Address', 
+        'Name_First', 
+        'Name_Last', 
+        'Party_Affiliation', 
+        'Gender', 
+        'Race', 
+        'County_Code', 
+        'Congressional_District', 
+        'Birth_Date']
 header_voterfile = [
     "County_Code", 
-    "Voter_ID", 
+    "Voter_ID",
     "Name_Last", 
     "Name_Suffix",
     "Name_First",
@@ -76,6 +86,8 @@ header_voterfile = [
     "Daytime_Phone_Extension",
     "Email_Address"
     ]
+
+#####     DO THIS FOR DICTS? https://www.geeksforgeeks.org/get-unique-values-from-a-column-in-pandas-dataframe/
 lookup_sachsregions = {    # Dictionaries can be used analogously to vlookup tables!
     'ALA':'North Central',
     'BAK':'North East',
@@ -214,11 +226,10 @@ lookup_county_code_to_name = {
    'WAL':'Walton',
    'WAS':'Washington'
    }
-countyinfodf = pd.DataFrame({
+countyinfo_df = pd.DataFrame({
         "Abbrev" : ['ALA' ,'BAK' ,'BAY' ,'BRA' ,'BRE' ,'BRO' ,'CAL' ,'CHA' ,'CIT' ,'CLA' ,'CLL' ,'CLM' ,'DAD' ,'DES' ,'DIX' ,'DUV' ,'ESC' ,'FLA' ,'FRA' ,'GAD' ,'GIL' ,'GLA' ,'GUL' ,'HAM' ,'HAR' ,'HEN' ,'HER' ,'HIG' ,'HIL' ,'HOL' ,'IND' ,'JAC' ,'JEF' ,'LAF' ,'LAK' ,'LEE' ,'LEO' ,'LEV' ,'LIB' ,'MAD' ,'MAN' ,'MRN' ,'MRT' ,'MON' ,'NAS' ,'OKA' ,'OKE' ,'ORA' ,'OSC' ,'PAL' ,'PAS' ,'PIN' ,'POL' ,'PUT' ,'SAN' ,'SAR' ,'SEM' ,'STJ' ,'STL' ,'SUM' ,'SUW' ,'TAY' ,'UNI' ,'VOL' ,'WAK' ,'WAL' ,'WAS'],
         "County" : ['Alachua' ,'Baker' ,'Bay' ,'Bradford' ,'Brevard' ,'Broward' ,'Calhoun' ,'Charlotte' ,'Citrus' ,'Clay' ,'Collier' ,'Columbia' ,'Miami-Dade' ,'Desoto' ,'Dixie' ,'Duval' ,'Escambia' ,'Flagler' ,'Franklin' ,'Gadsden' ,'Gilchrist' ,'Glades' ,'Gulf' ,'Hamilton' ,'Hardee' ,'Hendry' ,'Hernando' ,'Highlands' ,'Hillsborough' ,'Holmes' ,'Indian River' ,'Jackson' ,'Jefferson' ,'Lafayette' ,'Lake' ,'Lee' ,'Leon' ,'Levy' ,'Liberty' ,'Madison' ,'Manatee' ,'Marion' ,'Martin' ,'Monroe' ,'Nassau' ,'Okaloosa' ,'Okeechobee' ,'Orange' ,'Osceola' ,'Palm Beach' ,'Pasco' ,'Pinellas' ,'Polk' ,'Putnam' ,'Santarosa' ,'Sarasota' ,'Seminole' ,'St. Johns' ,'St Lucie' ,'Sumter' ,'Suwannee' ,'Taylor' ,'Union' ,'Volusia' ,'Wakulla' ,'Walton' ,'Washington'],
         "Sachs Region" : ['North Central' ,'North East' ,'North West' ,'North East' ,'Central East' ,'South East' ,'North West' ,'South West' ,'North Central' ,'North East' ,'South West' ,'North Central' ,'South East' ,'Central West' ,'North Central' ,'North East' ,'North West' ,'North East' ,'North West' ,'North West' ,'North Central' ,'South West' ,'North West' ,'North Central' ,'Central West' ,'South West' ,'Central West' ,'Central West' ,'Central West' ,'North West' ,'Central East' ,'North West' ,'North West' ,'North Central' ,'Central East' ,'South West' ,'North West' ,'North Central' ,'North West' ,'North Central' ,'Central West' ,'North Central' ,'Central East' ,'South East' ,'North East' ,'North West' ,'Central East' ,'Central East' ,'Central East' ,'South East' ,'Central West' ,'Central West' ,'Central West' ,'North East' ,'North West' ,'Central West' ,'Central East' ,'North East' ,'Central East' ,'Central West' ,'North Central' ,'North Central' ,'North East' ,'Central East' ,'North West' ,'North West' ,'North West']})
-
 lookup_race = {
     '1':'Other',                # VF code for 'American Indian or Alaskan Native'. SMG chooses to code these respondents as 'Other'
     '2':'Other',                # VF code for 'Asian or Pacific Islander'. SMG chooses to code these respondents as 'Other'
@@ -278,8 +289,7 @@ def extract_single_county_emails():
                      sep='\t', 
                      header=None, 
                      names=header_voterfile, 
-                     dtype=str, 
-                     index_col='Voter_ID')
+                     dtype=str) # Is there any advantage to making Voter_ID the index?
     email = df[df['Email_Address'].str.len()>2] #EMAIL SENSOR
     email.to_csv(outputdir+county_single+'_'+str(datetime.datetime.now())+'.csv') #EXPORT TO CSV
 
@@ -310,41 +320,72 @@ def random_sample_emails():
 
 
 
+def count_names(name):
+    count_of_names = len(allvoterfiles_emails[(allvoterfiles_emails['Name_First']==name)])
+    print(str(name) + ': there are ' + str(count_of_names) + ' entries.')
+
+
+# def prune_columns(df = allvoterfiles, cols = columns_keep):
+#     '''Selects needed columns, drops the rest, and re-orders the remaining columns in an ideal fashion. '''
+#     df = df[cols] # Select the ones you want -- https://stackoverflow.com/questions/14940743/selecting-excluding-sets-of-columns-in-pandas
+#     #build list of columns in the order you want
 
 
 
-def prune_columns(x):
-    '''Selects needed columns, drops the rest, and re-orders the remaining columns in an ideal fashion. '''
-    x = x[['a','d']] # Select the ones you want -- https://stackoverflow.com/questions/14940743/selecting-excluding-sets-of-columns-in-pandas
-    #build list of columns in the order you want
-
-
-    
 
 def import_all_voter_files():             #  https://stackoverflow.com/a/36416258
+    time_start_allvoterfiles = datetime.datetime.now()
     """This will grab all voterfiles in the directory and hold them in RAM as a spreadsheet-like object called a DataFrame. WARNING: MEMORY-INTENSIVE!"""
     global allvoterfiles     ### DELETE THIS GLOBAL ONCE SAMPLE EXTRACTION / CSV EXPORT COMES ONLINE
     global time_execute_allvoterfiles
     print('Reading all voter files from disk: ' + date_voterfile + '\n'
           + 'Time start: ' + str(datetime.datetime.now()))
-    time_start_allvoterfiles = datetime.datetime.now()
 
     path = path_voterfile                     # use your path
     all_files = glob.glob(os.path.join(path, "*.txt"))     # advisable to use os.path.join as this makes concatenation OS independent
     
+    #looping through each csv and appending their contents to a dataframe
+    # is there a way to make a progress-tracker for this? Ideally, one that 
     df_from_each_file = (pd.read_csv(f,
                                      sep='\t', 
                                      header=None, 
                                      names=header_voterfile, 
-                                     dtype=str, 
-                                     index_col='Voter_ID') for f in all_files)
+                                     dtype=str) for f in all_files) # Is there any advantage to making Voter_ID the index?
     allvoterfiles = pd.concat(df_from_each_file, ignore_index=True) ### consider replacing with sample extraction & csv export functions?
     # doesn't create a list, nor does it append to one
+    allvoterfiles.info()
 
     time_end_allvoterfiles = datetime.datetime.now()
     time_execute_allvoterfiles = time_end_allvoterfiles - time_start_allvoterfiles
     print('Done! ' + 'Time end: ' + str(datetime.datetime.now()))
     print('Time elapsed: ' + str(time_execute_allvoterfiles))
+
+
+def create_AMh2o():
+    import_all_voter_files()
+    AMh2o_county_list = ['DUV', 'NAS', 'BAK', 'CLA', 'STJ']
+    AMh2o = allvoterfiles.loc[allvoterfiles['County_Code'].isin(AMh2o_county_list)]
+    AMh2o_cols = ['County_Code', 
+                  'Voter_ID', 
+                  'Name_Last', 
+                  'Name_Suffix', 
+                  'Name_First', 
+                  'Name_Middle', 
+                  'Residence_City_(USPS)', 
+                  'Residence_Zipcode', 
+                  'Gender', 'Race', 
+                  'Birth_Date', 
+                  'Party_Affiliation', 
+                  'Email_Address']
+    AMh2o = AMh2o.loc[ : , AMh2o_cols]
+    print('\n' + 'Total voters =')
+    print(AMh2o['County_Code'].value_counts())
+    print('\n' + 'Total emails =')
+    print(AMh2o[AMh2o['Email_Address'].str.len()>2]['County_Code'].value_counts())
+    AMh2o.to_csv('American_Water '+str(datetime.datetime.now())+'.csv') #EXPORT TO CSV
+    return AMh2o
+
+
 
 def readme():
     print('Function list:')   
@@ -447,7 +488,9 @@ TO DO:
     4) Find a way to turn the code into a standalone program, that works in a VERY user friendly way, such that even an intern can extract a voter file sample.
         4a) Detecting the presence of the voter files, and building a path to them?
         4b) Customized sample/slice sizing?  
-        4c) GUI?
+        4c) GUI? https://www.tutorialspoint.com/python/python_gui_programming.htm
+        4d) Folder selection dialog: https://stackoverflow.com/questions/11295917/how-to-select-a-directory-and-store-the-location-using-tkinter-in-python
+    5) garbage collection? https://stackoverflow.com/a/39101287
     
     DONE (success)    
         1) Try bulk importing without regard to memory usage. Try to overload the computer.
