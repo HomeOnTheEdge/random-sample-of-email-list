@@ -83,7 +83,6 @@ def explore(df):
     # https://thispointer.com/python-pandas-how-to-drop-rows-in-dataframe-by-conditions-on-column-values/
 def drop_stuff(df, earliest_year=2014, minimum_votes=7):
     '''Slicing up the voter history file to find SuperVoters. DEFAULTS: earliest_year = 2014, minimum_votes = 7'''
-    df['Year'] = df['Election_Date'].dt.year
     # building an index of years to be dropped
     dropping_years = df[df['Year'] < earliest_year].index
     # dropping those years
