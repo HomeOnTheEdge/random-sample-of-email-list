@@ -14,7 +14,7 @@ import glob
 import numpy as np
 from random import sample
 
-# some of this code can be cleaned up - like the convenience functions - 
+# some of this code can be cleaned up - like the convenience functions -
 ## Import Python Script Into Another:
 ##       https://stackoverflow.com/questions/15696461/import-python-script-into-another
 ## Main takeaway: You can import other python scripts
@@ -23,33 +23,34 @@ from random import sample
 ## SEE ALSO: https://scipy-lectures.org/intro/language/reusing_code.html
 
 #%% Declaring variables and functions
-date_voterfile = str(20191112)
+pd.set_option('display.max_columns', None) #show all of columns name on pandas dataframe?
+date_voterfile = str(20200107)
 path_voterfile = str(
-    '/Users/smginterns/Documents/Voter File/'
-    + date_voterfile+'_VoterDetail/') 
+    'C:/Users/JohnEvans/Desktop/Work Drive/Voter File/'
+    + date_voterfile+'_VoterDetail/')
 list_voterfiles = os.listdir(path=path_voterfile)
-outputdir = str("/Users/smginterns/Desktop/Python code/!OUTPUT/")
+outputdir = str("/Users/JohnEvans/Desktop/Work Drive/Python code/!OUTPUT/")
 sample_size = 20000
 slice_size = 5000
 county_single = "GLA"
 county_path = str(
-    "/Users/smginterns/Documents/Voter File/"
+    "C:/Users/JohnEvans/Desktop/Work Drive/Voter File/"
     + date_voterfile+"_VoterDetail/"
     + county_single+"_"+date_voterfile+".txt")
 columns_keep = [
-        'Email_Address', 
-        'Name_First', 
-        'Name_Last', 
-        'Party_Affiliation', 
-        'Gender', 
-        'Race', 
-        'County_Code', 
-        'Congressional_District', 
+        'Email_Address',
+        'Name_First',
+        'Name_Last',
+        'Party_Affiliation',
+        'Gender',
+        'Race',
+        'County_Code',
+        'Congressional_District',
         'Birth_Date']
 header_voterfile = [
-    "County_Code", 
+    "County_Code",
     "Voter_ID",
-    "Name_Last", 
+    "Name_Last",
     "Name_Suffix",
     "Name_First",
     "Name_Middle",
@@ -88,6 +89,8 @@ header_voterfile = [
     ]
 
 #####     DO THIS FOR DICTS? https://www.geeksforgeeks.org/get-unique-values-from-a-column-in-pandas-dataframe/
+#####     SEE ALSO: Stackoverflow.com/questions/39602824/pandas-replace-string-with-another-string
+#####           df['prod_type'] = df['prod_type'].replace({'respon':'responsive', 'r':'responsive'})
 lookup_sachsregions = {    # Dictionaries can be used analogously to vlookup tables!
     'ALA':'North Central',
     'BAK':'North East',
@@ -230,6 +233,10 @@ countyinfo_df = pd.DataFrame({
         "Abbrev" : ['ALA' ,'BAK' ,'BAY' ,'BRA' ,'BRE' ,'BRO' ,'CAL' ,'CHA' ,'CIT' ,'CLA' ,'CLL' ,'CLM' ,'DAD' ,'DES' ,'DIX' ,'DUV' ,'ESC' ,'FLA' ,'FRA' ,'GAD' ,'GIL' ,'GLA' ,'GUL' ,'HAM' ,'HAR' ,'HEN' ,'HER' ,'HIG' ,'HIL' ,'HOL' ,'IND' ,'JAC' ,'JEF' ,'LAF' ,'LAK' ,'LEE' ,'LEO' ,'LEV' ,'LIB' ,'MAD' ,'MAN' ,'MRN' ,'MRT' ,'MON' ,'NAS' ,'OKA' ,'OKE' ,'ORA' ,'OSC' ,'PAL' ,'PAS' ,'PIN' ,'POL' ,'PUT' ,'SAN' ,'SAR' ,'SEM' ,'STJ' ,'STL' ,'SUM' ,'SUW' ,'TAY' ,'UNI' ,'VOL' ,'WAK' ,'WAL' ,'WAS'],
         "County" : ['Alachua' ,'Baker' ,'Bay' ,'Bradford' ,'Brevard' ,'Broward' ,'Calhoun' ,'Charlotte' ,'Citrus' ,'Clay' ,'Collier' ,'Columbia' ,'Miami-Dade' ,'Desoto' ,'Dixie' ,'Duval' ,'Escambia' ,'Flagler' ,'Franklin' ,'Gadsden' ,'Gilchrist' ,'Glades' ,'Gulf' ,'Hamilton' ,'Hardee' ,'Hendry' ,'Hernando' ,'Highlands' ,'Hillsborough' ,'Holmes' ,'Indian River' ,'Jackson' ,'Jefferson' ,'Lafayette' ,'Lake' ,'Lee' ,'Leon' ,'Levy' ,'Liberty' ,'Madison' ,'Manatee' ,'Marion' ,'Martin' ,'Monroe' ,'Nassau' ,'Okaloosa' ,'Okeechobee' ,'Orange' ,'Osceola' ,'Palm Beach' ,'Pasco' ,'Pinellas' ,'Polk' ,'Putnam' ,'Santarosa' ,'Sarasota' ,'Seminole' ,'St. Johns' ,'St Lucie' ,'Sumter' ,'Suwannee' ,'Taylor' ,'Union' ,'Volusia' ,'Wakulla' ,'Walton' ,'Washington'],
         "Sachs Region" : ['North Central' ,'North East' ,'North West' ,'North East' ,'Central East' ,'South East' ,'North West' ,'South West' ,'North Central' ,'North East' ,'South West' ,'North Central' ,'South East' ,'Central West' ,'North Central' ,'North East' ,'North West' ,'North East' ,'North West' ,'North West' ,'North Central' ,'South West' ,'North West' ,'North Central' ,'Central West' ,'South West' ,'Central West' ,'Central West' ,'Central West' ,'North West' ,'Central East' ,'North West' ,'North West' ,'North Central' ,'Central East' ,'South West' ,'North West' ,'North Central' ,'North West' ,'North Central' ,'Central West' ,'North Central' ,'Central East' ,'South East' ,'North East' ,'North West' ,'Central East' ,'Central East' ,'Central East' ,'South East' ,'Central West' ,'Central West' ,'Central West' ,'North East' ,'North West' ,'Central West' ,'Central East' ,'North East' ,'Central East' ,'Central West' ,'North Central' ,'North Central' ,'North East' ,'Central East' ,'North West' ,'North West' ,'North West']})
+countyinfo_dict = {
+                   "Abbrev" : ['ALA' ,'BAK' ,'BAY' ,'BRA' ,'BRE' ,'BRO' ,'CAL' ,'CHA' ,'CIT' ,'CLA' ,'CLL' ,'CLM' ,'DAD' ,'DES' ,'DIX' ,'DUV' ,'ESC' ,'FLA' ,'FRA' ,'GAD' ,'GIL' ,'GLA' ,'GUL' ,'HAM' ,'HAR' ,'HEN' ,'HER' ,'HIG' ,'HIL' ,'HOL' ,'IND' ,'JAC' ,'JEF' ,'LAF' ,'LAK' ,'LEE' ,'LEO' ,'LEV' ,'LIB' ,'MAD' ,'MAN' ,'MRN' ,'MRT' ,'MON' ,'NAS' ,'OKA' ,'OKE' ,'ORA' ,'OSC' ,'PAL' ,'PAS' ,'PIN' ,'POL' ,'PUT' ,'SAN' ,'SAR' ,'SEM' ,'STJ' ,'STL' ,'SUM' ,'SUW' ,'TAY' ,'UNI' ,'VOL' ,'WAK' ,'WAL' ,'WAS'],
+                   "County" : ['Alachua' ,'Baker' ,'Bay' ,'Bradford' ,'Brevard' ,'Broward' ,'Calhoun' ,'Charlotte' ,'Citrus' ,'Clay' ,'Collier' ,'Columbia' ,'Miami-Dade' ,'Desoto' ,'Dixie' ,'Duval' ,'Escambia' ,'Flagler' ,'Franklin' ,'Gadsden' ,'Gilchrist' ,'Glades' ,'Gulf' ,'Hamilton' ,'Hardee' ,'Hendry' ,'Hernando' ,'Highlands' ,'Hillsborough' ,'Holmes' ,'Indian River' ,'Jackson' ,'Jefferson' ,'Lafayette' ,'Lake' ,'Lee' ,'Leon' ,'Levy' ,'Liberty' ,'Madison' ,'Manatee' ,'Marion' ,'Martin' ,'Monroe' ,'Nassau' ,'Okaloosa' ,'Okeechobee' ,'Orange' ,'Osceola' ,'Palm Beach' ,'Pasco' ,'Pinellas' ,'Polk' ,'Putnam' ,'Santarosa' ,'Sarasota' ,'Seminole' ,'St. Johns' ,'St Lucie' ,'Sumter' ,'Suwannee' ,'Taylor' ,'Union' ,'Volusia' ,'Wakulla' ,'Walton' ,'Washington'],
+                   "Sachs Region" : ['North Central' ,'North East' ,'North West' ,'North East' ,'Central East' ,'South East' ,'North West' ,'South West' ,'North Central' ,'North East' ,'South West' ,'North Central' ,'South East' ,'Central West' ,'North Central' ,'North East' ,'North West' ,'North East' ,'North West' ,'North West' ,'North Central' ,'South West' ,'North West' ,'North Central' ,'Central West' ,'South West' ,'Central West' ,'Central West' ,'Central West' ,'North West' ,'Central East' ,'North West' ,'North West' ,'North Central' ,'Central East' ,'South West' ,'North West' ,'North Central' ,'North West' ,'North Central' ,'Central West' ,'North Central' ,'Central East' ,'South East' ,'North East' ,'North West' ,'Central East' ,'Central East' ,'Central East' ,'South East' ,'Central West' ,'Central West' ,'Central West' ,'North East' ,'North West' ,'Central West' ,'Central East' ,'North East' ,'Central East' ,'Central West' ,'North Central' ,'North Central' ,'North East' ,'Central East' ,'North West' ,'North West' ,'North West']}
 lookup_race = {
     '1':'Other',                # VF code for 'American Indian or Alaskan Native'. SMG chooses to code these respondents as 'Other'
     '2':'Other',                # VF code for 'Asian or Pacific Islander'. SMG chooses to code these respondents as 'Other'
@@ -249,11 +256,11 @@ def global_variables():
     date_voterfile = input(str("Please input the DATE of the voterfile (default = " + date_voterfile + ") : "))
     path_voterfile = str('/Users/smginterns/Documents/Voter File/' + date_voterfile+'_VoterDetail/')
     county_single = input(str("If you wish to test a single county, which one? \n\t"
-                               + "(expected: three capital letters) \n\t" 
+                               + "(expected: three capital letters) \n\t"
                                + "(default = " + county_single + ") \n\t"
                                +"\t\t\t\t\t INPUT > : "))
     county_path = str(
-        "/Users/smginterns/Documents/Voter File/"
+        "C:/Users/JohnEvans/Desktop/Work Drive/Voter File/"
         + date_voterfile+"_VoterDetail/"
         + county_single+"_"+date_voterfile+".txt")
 
@@ -261,34 +268,36 @@ def whereami():
     print("Current working directory: ", os.getcwd())
 
 def GOTOvoterfile():
-    os.chdir("/Users/smginterns/Documents/Voter File/20190910_VoterDetail/")
-    
+    os.chdir("C:/Users/JohnEvans/Desktop/Work Drive/Voter File/"
+        + date_voterfile+"_VoterDetail/")
+
 def GOTOpythoncode():
-    os.chdir("/Users/smginterns/Desktop/Python code")
+    os.chdir("C:/Users/JohnEvans/Desktop/Work Drive/Python code/Voter File/")
 
 def SHOWwhatsinside():
     print(os.listdir(path='.'))
-    
+   
 def SHOWvoterfiles():
     return os.listdir(
-        path='/Users/smginterns/Documents/Voter File/'
+        path='C:/Users/JohnEvans/Desktop/Work Drive/Voter File/'
         + date_voterfile
         + '_VoterDetail/.')
 
 def create_test_vf():   #setting up a test DataFrame for allvoterfiles
     global allvoterfiles
-    allvoterfiles = pd.DataFrame({"col_1" : [1,1,1,1,2,2,2,2], 
+    allvoterfiles = pd.DataFrame({"col_1" : [1,1,1,1,2,2,2,2],
                                   "col_2" : [2,3,1,4,5,6,7,2],
                                   "col_3" : [1,2,3,4,5,6,7,8]})
+    return allvoterfiles
 
 def extract_single_county_emails():
     """This will extract all entries in Glades county that have emails and export them as a .csv file."""
     time_start = datetime.datetime.now()
     print('Extracting emails from '+county_single+'_'+date_voterfile+' ...')
-    df = pd.read_csv(county_path, 
-                     sep='\t', 
-                     header=None, 
-                     names=header_voterfile, 
+    df = pd.read_csv(county_path,
+                     sep='\t',
+                     header=None,
+                     names=header_voterfile,
                      dtype=str) # Is there any advantage to making Voter_ID the index?
     email = df[df['Email_Address'].str.len()>2] #EMAIL SENSOR
     email.to_csv(outputdir+county_single+'_'+str(datetime.datetime.now())+'.csv') #EXPORT TO CSV
@@ -298,16 +307,16 @@ def extract_single_county_emails():
     print('Done! ' + 'Time end: ' + str(datetime.datetime.now()))
     print('Time elapsed: ' + str(time_execute))
 
-
 def extract_emails():
     time_start = datetime.datetime.now()
     global allvoterfiles
     global allvoterfiles_emails
-    allvoterfiles_emails = allvoterfiles[allvoterfiles['Email_Address'].str.len()>2] #EMAIL SENSOR
+    allvoterfiles_emails = allvoterfiles[allvoterfiles["Email_Address"].str.len()>2] #EMAIL SENSOR
     time_end = datetime.datetime.now()
     time_execute = time_end - time_start
     print('Done! ' + 'Time end: ' + str(datetime.datetime.now()))
     print('Time elapsed: ' + str(time_execute))
+    return allvoterfiles_emails
 
 def random_sample_emails():
     time_start = datetime.datetime.now()
@@ -319,6 +328,18 @@ def random_sample_emails():
     print('Time elapsed: ' + str(time_execute))
 
 
+def calculate_age(df):
+    df["Birth_Date"] = pd.to_datetime(df["Birth_Date"])
+    today = datetime.datetime.now()
+    df["Age"] = today - df["Birth_Date"]
+    df["Age"] = df["Age"].dt.days
+    df["Age"] = np.floor(df["Age"]/365.2425)
+
+def clean_voter_file(df, lookup_region, lookup_race):
+    df = df.replace(np.nan, '', regex=True)
+    df = df.replace({"County_Code":lookup_region})
+    df = df.replace({"Race":lookup_race})
+    return df
 
 def count_names(name):
     count_of_names = len(allvoterfiles_emails[(allvoterfiles_emails['Name_First']==name)])
@@ -334,8 +355,8 @@ def count_names(name):
 
 
 def import_all_voter_files():             #  https://stackoverflow.com/a/36416258
-    time_start_allvoterfiles = datetime.datetime.now()
     """This will grab all voterfiles in the directory and hold them in RAM as a spreadsheet-like object called a DataFrame. WARNING: MEMORY-INTENSIVE!"""
+    time_start_allvoterfiles = datetime.datetime.now()
     global allvoterfiles     ### DELETE THIS GLOBAL ONCE SAMPLE EXTRACTION / CSV EXPORT COMES ONLINE
     global time_execute_allvoterfiles
     print('Reading all voter files from disk: ' + date_voterfile + '\n'
@@ -343,15 +364,16 @@ def import_all_voter_files():             #  https://stackoverflow.com/a/3641625
 
     path = path_voterfile                     # use your path
     all_files = glob.glob(os.path.join(path, "*.txt"))     # advisable to use os.path.join as this makes concatenation OS independent
-    
+   
     #looping through each csv and appending their contents to a dataframe
-    # is there a way to make a progress-tracker for this? Ideally, one that 
+    # is there a way to make a progress-tracker for this? Ideally, one that
     df_from_each_file = (pd.read_csv(f,
-                                     sep='\t', 
-                                     header=None, 
-                                     names=header_voterfile, 
+                                     sep='\t',
+                                     header=None,
+                                     names=header_voterfile,
                                      dtype=str) for f in all_files) # Is there any advantage to making Voter_ID the index?
     allvoterfiles = pd.concat(df_from_each_file, ignore_index=True) ### consider replacing with sample extraction & csv export functions?
+    
     # doesn't create a list, nor does it append to one
     allvoterfiles.info()
 
@@ -359,23 +381,23 @@ def import_all_voter_files():             #  https://stackoverflow.com/a/3641625
     time_execute_allvoterfiles = time_end_allvoterfiles - time_start_allvoterfiles
     print('Done! ' + 'Time end: ' + str(datetime.datetime.now()))
     print('Time elapsed: ' + str(time_execute_allvoterfiles))
-
+    return allvoterfiles
 
 def create_AMh2o():
     import_all_voter_files()
     AMh2o_county_list = ['DUV', 'NAS', 'BAK', 'CLA', 'STJ']
     AMh2o = allvoterfiles.loc[allvoterfiles['County_Code'].isin(AMh2o_county_list)]
-    AMh2o_cols = ['County_Code', 
-                  'Voter_ID', 
-                  'Name_Last', 
-                  'Name_Suffix', 
-                  'Name_First', 
-                  'Name_Middle', 
-                  'Residence_City_(USPS)', 
-                  'Residence_Zipcode', 
-                  'Gender', 'Race', 
-                  'Birth_Date', 
-                  'Party_Affiliation', 
+    AMh2o_cols = ['County_Code',
+                  'Voter_ID',
+                  'Name_Last',
+                  'Name_Suffix',
+                  'Name_First',
+                  'Name_Middle',
+                  'Residence_City_(USPS)',
+                  'Residence_Zipcode',
+                  'Gender', 'Race',
+                  'Birth_Date',
+                  'Party_Affiliation',
                   'Email_Address']
     AMh2o = AMh2o.loc[ : , AMh2o_cols]
     print('\n' + 'Total voters =')
@@ -386,10 +408,14 @@ def create_AMh2o():
     return AMh2o
 
 
+def get_unique_addresses(allvoterfiles):
+    uniqueAddresses = (allvoterfiles['Residence_Address_Line_1'].append(allvoterfiles['Residence_Address_Line_2']).append(allvoterfiles['Residence_City_(USPS)']).append(allvoterfiles['Residence_State']).append(allvoterfiles['Residence_Zipcode'])).unique()
+    return uniqueAddresses
+
 
 def readme():
-    print('Function list:')   
-    print('\n-  import_all_voter_files()' + '\n\t' + import_all_voter_files.__doc__)
+    print('Function list:')  
+    print('\n-  import_all_voter_files()' + '\n\t' + str(import_all_voter_files.__doc__))
 #    print('\n-  menu()' + '\n\t' + menu.__doc__)
 
 time_01 = datetime.datetime.now()
@@ -453,13 +479,13 @@ print('\nWelcome to the SMG Florida Voter-file handler!'
                 #print ("2. User management")
                 #print ("3. Reboot the server")
                 #print (30 * '-')
-                # 
+                #
                 ### Get input ###
                 #choice = raw_input('Enter your choice [1-3] : ')
-                # 
+                #
                 #### Convert string to int type ##
                 #choice = int(choice)
-                # 
+                #
                 #### Take action as per selected menu-option ###
                 #if choice == 1:
                 #        print ("Starting backup...")
@@ -473,9 +499,80 @@ print('\nWelcome to the SMG Florida Voter-file handler!'
 
 
 
+## NOTES on finding unique addresses
+                # grab only addresses:                              allResidences = allvoterfiles[["Residence_Address_Line_1", "Residence_Address_Line_2", "Residence_City_(USPS)", "Residence_State", "Residence_Zipcode"]]
+                # Convert all entries in dataframe to uppercase:    uniqueAddresses = allResidences.apply(lambda x: x.astype(str).str.upper())
+                # Strip all whitespace from dataframe:              uniqueAddresses = uniqueAddresses.apply(lambda x: x.astype(str).str.strip())
+                # drop duplicates:                                  uniqueAddresses = uniqueAddresses.drop_duplicates()
+                # Sort dataframe by column:                         uniqueAddresses.sort_values(by="Residence_Address_Line_1", inplace=True)               
 
 
+def house_mailing_list():
+    import_all_voter_files()                                                   # Get Voter Files
+    allvoterfiles = allvoterfiles.apply(lambda x: x.astype(str).str.strip())    # Strip whitespace from allvoterfiles
+    allvoterfiles = allvoterfiles.drop(allvoterfiles[allvoterfiles.Name_First=="*"].index) # Drop all "*" addresses'
+    houseColumns = ["Name_First", "Name_Last",
+                    "Residence_Address_Line_1","Residence_Address_Line_2","Residence_City_(USPS)","Residence_State","Residence_Zipcode",
+                    "Mailing_Line_1","Mailing_Line_2","Mailing_Line_3","Mailing_City","Mailing_State","Mailing_Zipcode","Mailing_Country"] # List of columns to be used
+    houseMailing = allvoterfiles[houseColumns] # build preliminary mailing list
+    houseMailing = houseMailing.apply(lambda x: x.astype(str).str.upper()) # Render all text uppercase for ease of use
+    houseMailing["mailEmpty"] = houseMailing["Mailing_Line_1"]=="NAN" # find null mailing addresses to replace with residence addresses
+    houseMailing["mailEmpty"].value_counts()
 
+    # Building Address_Type column
+    houseMailing["Address_Type"] = houseMailing["mailEmpty"]
+    houseMailing.loc[houseMailing["mailEmpty"] == True, "Address_Type"] = "Residence"
+    houseMailing.loc[houseMailing["mailEmpty"] == False, "Address_Type"] = "Mailing"
+   
+    # Building final address columns
+    houseMailing["Address_Line_1"]  = houseMailing["Mailing_Line_1"]
+    houseMailing["Address_Line_2"]  = houseMailing["Mailing_Line_2"]
+    houseMailing["Address_Line_3"]  = houseMailing["Mailing_Line_3"]
+    houseMailing["Address_City"]    = houseMailing["Mailing_City"]
+    houseMailing["Address_State"]   = houseMailing["Mailing_State"]
+    houseMailing["Address_Zipcode"] = houseMailing["Mailing_Zipcode"]
+    houseMailing["Address_Country"] = houseMailing["Mailing_Country"]
+   
+    # Transferring Residence Addresses where mailing addresses are missing
+    houseMailing.loc[houseMailing["Address_Type"] == "Residence", "Address_Line_1"]  = houseMailing["Residence_Address_Line_1"]
+    houseMailing.loc[houseMailing["Address_Type"] == "Residence", "Address_Line_2"]  = houseMailing["Residence_Address_Line_2"]    
+    houseMailing.loc[houseMailing["Address_Type"] == "Residence", "Address_City"]    = houseMailing["Residence_City_(USPS)"]
+    houseMailing.loc[houseMailing["Address_Type"] == "Residence", "Address_State"]   = houseMailing["Residence_State"]
+    houseMailing.loc[houseMailing["Address_Type"] == "Residence", "Address_Zipcode"] = houseMailing["Residence_Zipcode"]
+   
+    # Convert NAN to empty string ""
+    houseMailing["Address_Line_1"]  = houseMailing['Address_Line_1'].replace({'NAN':''})
+    houseMailing["Address_Line_2"]  = houseMailing['Address_Line_2'].replace({'NAN':''})
+    houseMailing["Address_Line_3"]  = houseMailing['Address_Line_3'].replace({'NAN':''})
+    houseMailing["Address_City"]    = houseMailing['Address_City'].replace({'NAN':''})
+    houseMailing["Address_State"]   = houseMailing['Address_State'].replace({'NAN':''})
+    houseMailing["Address_Zipcode"] = houseMailing['Address_Zipcode'].replace({'NAN':''})
+    houseMailing["Address_Country"] = houseMailing['Address_Country'].replace({'NAN':''})
+
+    # Removing unneeded columns
+    houseMailing = houseMailing[["Address_Line_1",
+                                 "Address_Line_2",
+                                 "Address_Line_3",
+                                 "Address_City",
+                                 "Address_State",
+                                 "Address_Zipcode",
+                                 "Address_Country"]]
+   
+    # Dropping Duplicate Addresses
+    houseMailing = houseMailing.drop_duplicates(subset=["Address_Line_1",
+                                                        "Address_Line_2",
+                                                        "Address_Line_3",
+                                                        "Address_City",
+                                                        "Address_State",
+                                                        "Address_Zipcode",
+                                                        "Address_Country"])
+
+    # Output CSV of final list:
+    houseMailing.to_csv('House_Mailing_List.csv', index=False)
+   
+    # Sampling houseMailing for spot-checking quality
+    houseSample = houseMailing.sample(n=5000)
+    houseSample.to_csv('SAMPLE_House_Mailing_List_2020-01-14_C.csv', index=False)
 
 #%% TO-DO LIST
 """
@@ -491,12 +588,12 @@ TO DO:
         4c) GUI? https://www.tutorialspoint.com/python/python_gui_programming.htm
         4d) Folder selection dialog: https://stackoverflow.com/questions/11295917/how-to-select-a-directory-and-store-the-location-using-tkinter-in-python
     5) garbage collection? https://stackoverflow.com/a/39101287
-    
+   
     DONE (success)    
         1) Try bulk importing without regard to memory usage. Try to overload the computer.
             1a) Loop to iterate through voter files and concatenate them.
             1b) Even consider concatenating whole-files, and not just rows with emails, just to stress-test. Performance in this regard sets the stage for 538-type voter-history analysis.    
-    
+   
 
 """
 
@@ -506,7 +603,7 @@ TO DO:
 -------------------------------------------------------------------------------
 The Data Dictionary for the Florida voter file as of 2019-11-06 is below:
 
-    
+   
     *** File Naming Convention ***
         File Type            Individual File Name       Zip File Name
         Voter Registration   CountyCode_YYYYMMDD.txt    Voter_Registration_YYYYMMDD.zip
@@ -579,7 +676,7 @@ The Data Dictionary for the Florida voter file as of 2019-11-06 is below:
         NPA                 No Party Affiliation
         PSL                 Party for Socialism and Liberation - Florida
         REF                 Reform Party of Florida
-        REP                 Republican Party of Florida 
+        REP                 Republican Party of Florida
 
     *** County Codes to County Names ***
         * County Code *     * County *
@@ -656,3 +753,4 @@ The Data Dictionary for the Florida voter file as of 2019-11-06 is below:
 """
 
 """ This program is intended to extract a random-sample of emails from the Florida voter file for use in email surveys. """
+
